@@ -302,14 +302,14 @@ const T={
   doneT:"Вы записаны",doneP:"Соня получила вашу запись и свяжется с вами, если нужно что-то уточнить.",
   doneTg:"Хотите подтверждение в Telegram? Нажмите кнопку ниже, а в боте — «Запустить» (Start). Подтверждение придёт сразу.",
   dSvc:"Процедура",dWhen:"Когда",dPrice:"Стоимость",dWhere:"Адрес",tg:"Получить подтверждение в Telegram",again:"Записаться ещё",
-  rules:"Если у вас аллергия, гормональный сбой или беременность, предупредите заранее. Отменить или перенести можно не позже чем за 4 часа.",
+  rules:"Если у вас аллергия, гормональный сбой или беременность, предупредите заранее. Отменить или перенести можно не позже чем за 10 часов.",
   dows:["Пн","Вт","Ср","Чт","Пт","Сб","Вс"],loc:"ru-RU",zonesWord:n=>n+" "+(n===1?"зона":"зоны"),dayoff:"не работает",
   mineT:"Ваши записи",mineHint:"Нажмите на запись, чтобы открыть детали.",dDur:"Длительность",linkT:"Отмена записи",linkP:"Вы перешли по ссылке для отмены записи.",
   cancel:"Отменить запись",cancelQ:"Точно отменить?",yes:"Да, отменить",no:"Нет",cancelling:"Отменяем…",
   cOk:"Запись отменена. Время снова свободно.",cAlready:"Эта запись уже отменена.",
-  cLate:"До визита меньше 4 часов, отменить онлайн уже нельзя. Напишите Соне в ",cLateLink:"Instagram",
+  cLate:"До визита меньше 10 часов, отменить онлайн уже нельзя. Напишите Соне в ",cLateLink:"Instagram",
   cInvalid:"Ссылка для отмены недействительна.",cErr:"Не получилось отменить. Попробуйте ещё раз.",
-  cRule:"Отменить онлайн можно не позже чем за 4 часа до визита."},
+  cRule:"Отменить онлайн можно не позже чем за 10 часов до визита."},
  en:{title:"Online booking",sub:"Brows & lashes · Tbilisi, Saburtalo",hours:"Mon–Fri · 1:00–6:00 pm",window:"From tomorrow, up to 2 weeks ahead",
   h1:"Service",h2:"Day and time",h3:"Contact details",loading:"Loading available times…",
   "lg-free":"available","lg-few":"few slots","lg-full":"fully booked","lg-off":"not bookable",
@@ -326,14 +326,14 @@ const T={
   doneT:"You're booked",doneP:"Sonya has your booking and will contact you if anything needs clarifying.",
   doneTg:"Want a confirmation in Telegram? Tap the button below, then “Start” in the bot. It arrives right away.",
   dSvc:"Service",dWhen:"When",dPrice:"Price",dWhere:"Address",tg:"Get confirmation in Telegram",again:"Book again",
-  rules:"If you have allergies, hormonal issues or are pregnant, please let me know in advance. Cancel or reschedule at least 4 hours before.",
+  rules:"If you have allergies, hormonal issues or are pregnant, please let me know in advance. Cancel or reschedule at least 10 hours before.",
   dows:["Mo","Tu","We","Th","Fr","Sa","Su"],loc:"en-GB",zonesWord:n=>n+" "+(n===1?"zone":"zones"),dayoff:"day off",
   mineT:"Your bookings",mineHint:"Tap a booking to see the details.",dDur:"Duration",linkT:"Cancel booking",linkP:"You opened a link to cancel your booking.",
   cancel:"Cancel booking",cancelQ:"Cancel for sure?",yes:"Yes, cancel",no:"No",cancelling:"Cancelling…",
   cOk:"Booking cancelled. The time is free again.",cAlready:"This booking is already cancelled.",
-  cLate:"Less than 4 hours left, so it can't be cancelled online. Please message Sonya on ",cLateLink:"Instagram",
+  cLate:"Less than 10 hours left, so it can't be cancelled online. Please message Sonya on ",cLateLink:"Instagram",
   cInvalid:"This cancel link isn't valid.",cErr:"Couldn't cancel. Please try again.",
-  cRule:"You can cancel online up to 4 hours before your visit."}
+  cRule:"You can cancel online up to 10 hours before your visit."}
 };
 const OPEN=13*60, LAST=18*60, STEP=30;
 const STARTS=[];for(let m=OPEN;m<=LAST;m+=STEP)STARTS.push(m);
@@ -594,7 +594,7 @@ function renderMine(){
 }
 function showDone(j){
   const L=T[lang];
-  const ts=dFromKey(dateKey).getTime()+time*60000-4*3600000;
+  const ts=dFromKey(dateKey).getTime()+time*60000-10*3600000;
   const savedSvc=svcLabel(),savedWhen=whenLabel(true);
   if(j.id&&j.t)saveBooking({id:j.id,t:j.t,svc:savedSvc,when:savedWhen,ts:ts,price:price(),dur:duration()});
   (busy[dateKey]=busy[dateKey]||[]).push([time,time+duration()]);
