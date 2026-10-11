@@ -130,6 +130,16 @@ h2 .n{font:600 12px/1 var(--f-body);color:var(--accent);letter-spacing:.08em}
 .bk{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:10px}
 .bk b{font-weight:600}
 .bk .row{display:flex;gap:8px;flex-wrap:wrap}
+.bk details{display:flex;flex-direction:column}
+.bk summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 0;-webkit-tap-highlight-color:transparent}
+.bk summary::-webkit-details-marker{display:none}
+.bk summary .st{display:flex;flex-direction:column;gap:2px;min-width:0}
+.bk .chev{flex:none;width:30px;height:30px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--muted)}
+.bk .chev svg{width:14px;height:14px;transition:transform .2s}
+.bk details[open] .chev svg{transform:rotate(180deg)}
+.bk .det{display:flex;flex-direction:column;gap:10px;padding-top:12px}
+.bk .det .btn{padding:12px 14px;font-size:14.5px}
+.bk .maplink{font-size:13.5px;color:var(--accent)}
 .link-btn{background:none;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--busy)}
 .link-btn.plain{color:var(--ink)}
 .msg{font-size:13.5px;margin:0;color:var(--muted)}
@@ -294,7 +304,7 @@ const T={
   dSvc:"Процедура",dWhen:"Когда",dPrice:"Стоимость",dWhere:"Адрес",tg:"Получить подтверждение в Telegram",again:"Записаться ещё",
   rules:"Если у вас аллергия, гормональный сбой или беременность, предупредите заранее. Отменить или перенести можно не позже чем за 4 часа.",
   dows:["Пн","Вт","Ср","Чт","Пт","Сб","Вс"],loc:"ru-RU",zonesWord:n=>n+" "+(n===1?"зона":"зоны"),dayoff:"не работает",
-  mineT:"Ваши записи",linkT:"Отмена записи",linkP:"Вы перешли по ссылке для отмены записи.",
+  mineT:"Ваши записи",mineHint:"Нажмите на запись, чтобы открыть детали.",dDur:"Длительность",linkT:"Отмена записи",linkP:"Вы перешли по ссылке для отмены записи.",
   cancel:"Отменить запись",cancelQ:"Точно отменить?",yes:"Да, отменить",no:"Нет",cancelling:"Отменяем…",
   cOk:"Запись отменена. Время снова свободно.",cAlready:"Эта запись уже отменена.",
   cLate:"До визита меньше 4 часов, отменить онлайн уже нельзя. Напишите Соне в ",cLateLink:"Instagram",
@@ -318,7 +328,7 @@ const T={
   dSvc:"Service",dWhen:"When",dPrice:"Price",dWhere:"Address",tg:"Get confirmation in Telegram",again:"Book again",
   rules:"If you have allergies, hormonal issues or are pregnant, please let me know in advance. Cancel or reschedule at least 4 hours before.",
   dows:["Mo","Tu","We","Th","Fr","Sa","Su"],loc:"en-GB",zonesWord:n=>n+" "+(n===1?"zone":"zones"),dayoff:"day off",
-  mineT:"Your bookings",linkT:"Cancel booking",linkP:"You opened a link to cancel your booking.",
+  mineT:"Your bookings",mineHint:"Tap a booking to see the details.",dDur:"Duration",linkT:"Cancel booking",linkP:"You opened a link to cancel your booking.",
   cancel:"Cancel booking",cancelQ:"Cancel for sure?",yes:"Yes, cancel",no:"No",cancelling:"Cancelling…",
   cOk:"Booking cancelled. The time is free again.",cAlready:"This booking is already cancelled.",
   cLate:"Less than 4 hours left, so it can't be cancelled online. Please message Sonya on ",cLateLink:"Instagram",
@@ -555,10 +565,30 @@ function renderMine(){
     const p=document.createElement("p");p.className="note";p.textContent=L.linkP;box.appendChild(p);
     const d=document.createElement("div");d.className="bk";box.appendChild(d);cancelUI(d,linkCancel.id,linkCancel.t);
   }
+  if(list.length){const hn=document.createElement("p");hn.className="note";hn.textContent=L.mineHint;box.appendChild(hn)}
   list.forEach(b=>{
     const d=document.createElement("div");d.className="bk";
+    const det=document.createElement("details");const sm=document.createElement("summary");
+    const st=document.createElement("span");st.className="st";
     const s=document.createElement("b");s.textContent=b.svc;const w=document.createElement("span");w.className="msg";w.textContent=b.when;
-    const c=document.createElement("div");d.append(s,w,c);box.appendChild(d);cancelUI(c,b.id,b.t);
+    st.append(s,w);
+    const ch=document.createElement("span");ch.className="chev";ch.setAttribute("aria-hidden","true");
+    ch.innerHTML='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg>';
+    sm.append(st,ch);det.appendChild(sm);
+    const body=document.createElement("div");body.className="det";
+    const ul=document.createElement("ul");ul.className="sum";
+    const rows=[];
+    if(b.price)rows.push([L.dPrice,b.price+" ₾"]);
+    if(b.dur)rows.push([L.dDur,b.dur+" "+L.min]);
+    rows.push([L.dWhere,"35/37 Zhiuli Shartava St, Saburtalo"]);
+    rows.forEach(([a,v])=>{const li=document.createElement("li");const x=document.createElement("span");x.textContent=a;const y=document.createElement("b");y.textContent=v;li.append(x,y);ul.appendChild(li)});
+    body.appendChild(ul);
+    const lm=document.createElement("p");lm.className="note";lm.textContent="📍 "+L.landmark+" · ";
+    const ml=document.createElement("a");ml.className="maplink";ml.href="https://maps.app.goo.gl/EWKE2w7sfYEYwMq78";ml.target="_blank";ml.rel="noopener";ml.textContent=L.map;lm.appendChild(ml);body.appendChild(lm);
+    const r=document.createElement("p");r.className="note";r.textContent=L.rules;body.appendChild(r);
+    const tg=document.createElement("a");tg.className="btn ghost";tg.href=BOT+"?start=bk_"+b.id+"_"+b.t;tg.target="_blank";tg.rel="noopener";tg.textContent="✈️ "+L.tg;body.appendChild(tg);
+    const c=document.createElement("div");body.appendChild(c);cancelUI(c,b.id,b.t);
+    det.appendChild(body);d.appendChild(det);box.appendChild(d);
   });
   const r=document.createElement("p");r.className="note";r.textContent=L.cRule;box.appendChild(r);
 }
@@ -566,7 +596,7 @@ function showDone(j){
   const L=T[lang];
   const ts=dFromKey(dateKey).getTime()+time*60000-4*3600000;
   const savedSvc=svcLabel(),savedWhen=whenLabel(true);
-  if(j.id&&j.t)saveBooking({id:j.id,t:j.t,svc:savedSvc,when:savedWhen,ts:ts});
+  if(j.id&&j.t)saveBooking({id:j.id,t:j.t,svc:savedSvc,when:savedWhen,ts:ts,price:price(),dur:duration()});
   (busy[dateKey]=busy[dateKey]||[]).push([time,time+duration()]);
   const d=$("done");d.hidden=false;d.innerHTML="";
   const h=document.createElement("h2");h.textContent=L.doneT+" 🤍";d.appendChild(h);
