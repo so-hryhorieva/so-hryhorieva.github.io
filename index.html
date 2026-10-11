@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Онлайн запись · so.hryhorieva</title>
+<meta name="description" content="Брови и ресницы в Тбилиси, Сабуртало. Онлайн-запись: свободные дни и время видны сразу.">
+<meta property="og:title" content="Онлайн запись · so.hryhorieva">
+<meta property="og:description" content="Брови и ресницы · Тбилиси, Сабуртало. Выберите процедуру, день и свободное время.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#FBF8F7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Tenor+Sans&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one mobile column, three numbered steps stacked, sticky summary bar at the bottom */
+:root{
+  --bg:#FBF8F7; --surface:#FFFFFF; --ink:#2B1E22; --muted:#7A6A6E; --line:#EADFE0;
+  --accent:#8E3B57; --accent-ink:#FFFFFF; --accent-soft:#F4E3E8;
+  --ok:#2F7A55; --ok-soft:#E2F1E8; --few:#A0640F; --few-soft:#FBEFD9;
+  --busy:#B5403A; --busy-soft:#F8E1DE; --off:#B3A7AA;
+  --f-script:"Playfair Display","Iowan Old Style",Georgia,serif;
+  --f-display:"Tenor Sans","Iowan Old Style",Georgia,serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --r:14px; color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#171214; --surface:#211A1D; --ink:#F3E9EC; --muted:#B3A3A8; --line:#3A2E33;
+  --accent:#E08AA6; --accent-ink:#2A121C; --accent-soft:#3A2430;
+  --ok:#7CC79E; --ok-soft:#1F3329; --few:#E3B565; --few-soft:#3A2F1A;
+  --busy:#EE8A82; --busy-soft:#3D2120; --off:#6B5F63; color-scheme:dark}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 var(--f-body);-webkit-font-smoothing:antialiased;
+  padding-top:env(safe-area-inset-top,0px)}
+[hidden]{display:none!important}
+.wrap{max-width:480px;margin:0 auto;padding-inline:16px;padding-block:20px 150px;display:flex;flex-direction:column;gap:28px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.top{display:flex;flex-direction:column;gap:10px}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.handle{font-size:13px;letter-spacing:.06em;color:var(--muted);text-decoration:none}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;padding:2px;background:var(--surface)}
+.lang button{border:0;background:none;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+h1{font:500 44px/1.1 var(--f-script);margin:6px 0 0;text-wrap:balance;color:var(--accent);letter-spacing:-.01em}
+.sub{margin:0;color:var(--muted)}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 0;padding:0;list-style:none}
+.facts li{font-size:13px;padding:5px 10px;border-radius:999px;background:var(--accent-soft);color:var(--ink)}
+
+section{display:flex;flex-direction:column;gap:14px}
+h2{font:400 21px/1.2 var(--f-display);margin:0;display:flex;align-items:baseline;gap:10px}
+h2 .n{font:600 12px/1 var(--f-body);color:var(--accent);letter-spacing:.08em}
+.group{display:flex;flex-direction:column;gap:6px}
+.glabel{font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:6px 0 0}
+.svc{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 12px;text-align:left;width:100%;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;cursor:pointer}
+.svc .nm{min-width:0;font-weight:500}
+.svc .pr{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.svc .du{grid-column:1/-1;font-size:12.5px;color:var(--muted)}
+.svc[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+
+.zones{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 14px}
+.zones .zt{min-width:0}
+.zones .zt b{display:block;font-weight:600}
+.zones .zt span{font-size:12.5px;color:var(--muted)}
+.step{display:flex;align-items:center;gap:6px}
+.step button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--bg);font-size:18px;line-height:1;cursor:pointer}
+.step button:disabled{opacity:.35;cursor:default}
+.step output{min-width:22px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--muted);margin:0;padding:0;list-style:none}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.cal{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;min-height:120px}
+.cal-h{display:flex;justify-content:space-between;align-items:baseline;margin:0 2px 10px;gap:10px}
+.cal-h b{font-weight:600;text-transform:capitalize}
+.cal-h span{font-size:12.5px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.dow{font-size:11px;text-align:center;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding-bottom:2px}
+.day{aspect-ratio:1/1.08;max-width:100%;border:1px solid transparent;border-radius:11px;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-variant-numeric:tabular-nums;font-weight:600;font-size:15px;padding:0}
+.day .dot{width:6px;height:6px;border-radius:50%}
+.day.free{background:var(--ok-soft);cursor:pointer}.day.free .dot{background:var(--ok)}
+.day.few{background:var(--few-soft);cursor:pointer}.day.few .dot{background:var(--few)}
+.day.full{background:var(--busy-soft);color:var(--busy)}.day.full .num{text-decoration:line-through}
+.day.full .dot{background:var(--busy)}
+.day.off{color:var(--off);font-weight:500}
+.day.dayoff{background:repeating-linear-gradient(135deg,transparent 0 5px,var(--line) 5px 6px);color:var(--off)}
+.day.today{border-color:var(--line)}
+.day[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.day[aria-pressed="true"] .dot{background:var(--accent-ink)}
+.state{font-size:14px;color:var(--muted);margin:24px 4px;text-align:center}
+.state a{color:var(--accent)}
+
+.tlabel{font-size:13.5px;color:var(--muted);margin:2px 2px 0}
+.tlabel b{color:var(--ink);font-weight:600}
+.times{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.t{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 0;font-weight:600;font-variant-numeric:tabular-nums;cursor:pointer}
+.t.busy{background:var(--busy-soft);color:var(--busy);border-color:transparent;text-decoration:line-through;cursor:not-allowed;font-weight:500}
+.t[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.empty{font-size:13.5px;color:var(--busy);margin:0}
+
+.fields{display:flex;flex-direction:column;gap:12px}
+.f{display:flex;flex-direction:column;gap:5px}
+.f label,.f .lbl{font-size:13px;font-weight:600}
+.f small{font-weight:400;color:var(--muted)}
+.f input,.f textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.f input:focus,.f textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.f textarea{min-height:76px;resize:vertical}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.err{font-size:12.5px;color:var(--busy);margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-size:13px;cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.alert{border-radius:12px;padding:12px 14px;font-size:14px;background:var(--busy-soft);color:var(--busy);margin:0}
+
+.done{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.done h2{font:500 32px/1.15 var(--f-script);color:var(--accent)}
+.sum{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.sum li{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.sum li span{color:var(--muted)}
+.sum li b{text-align:right;font-weight:600;min-width:0}
+.btn{display:block;text-align:center;text-decoration:none;border:0;border-radius:14px;padding:14px 16px;font-weight:700;cursor:pointer;background:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.6;cursor:progress}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--ink);font-weight:600}
+.note{font-size:13px;color:var(--muted);margin:0}
+.is-done h1,.is-done .sub,.is-done .facts,.is-done .demo{display:none}
+.mine{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.mine h3{font:400 19px/1.2 var(--f-display);margin:0}
+.bk{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:10px}
+.bk b{font-weight:600}
+.bk .row{display:flex;gap:8px;flex-wrap:wrap}
+.link-btn{background:none;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--busy)}
+.link-btn.plain{color:var(--ink)}
+.msg{font-size:13.5px;margin:0;color:var(--muted)}
+.msg.ok{color:var(--ok)}.msg.bad{color:var(--busy)}
+.msg a{color:var(--accent)}
+
+footer{display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+footer a{color:var(--ink)}
+
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);
+  padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px))}
+.bar-in{max-width:480px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.bar-sum{flex:1;min-width:0;font-size:13px;line-height:1.35}
+.bar-sum b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-sum span{color:var(--muted)}
+.bar .btn{flex:none;padding:13px 18px}
+@media (prefers-reduced-motion:no-preference){.day,.t,.svc,.chip,.btn{transition:background-color .15s,border-color .15s,color .15s}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="toprow">
+      <a class="handle" href="https://instagram.com/so.hryhorieva" target="_blank" rel="noopener">so.hryhorieva</a>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" id="lang-ru" aria-pressed="true">RU</button>
+        <button type="button" id="lang-en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+    <h1 data-i="title">Онлайн запись</h1>
+    <p class="sub" data-i="sub">Брови и ресницы · Тбилиси, Сабуртало</p>
+    <ul class="facts">
+      <li data-i="hours">Пн–Пт · 13:00–18:00</li>
+      <li data-i="window">С завтра и на 2 недели вперёд</li>
+    </ul>
+  </header>
+
+  <section id="mine" class="mine" hidden aria-live="polite"></section>
+  <section id="done" class="done" hidden aria-live="polite"></section>
+
+  <section id="s-service" aria-labelledby="h-service">
+    <h2 id="h-service"><span class="n">1</span><span data-i="h1">Процедура</span></h2>
+    <div id="services" class="group"></div>
+    <div class="zones">
+      <div class="zt"><b id="z-title">Депиляция</b><span id="z-hint"></span></div>
+      <div class="step">
+        <button type="button" id="z-minus" aria-label="−">−</button>
+        <output id="z-val" aria-live="polite">0</output>
+        <button type="button" id="z-plus" aria-label="+">+</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-date" aria-labelledby="h-date">
+    <h2 id="h-date"><span class="n">2</span><span data-i="h2">День и время</span></h2>
+    <ul class="legend">
+      <li><i style="background:var(--ok)"></i><span data-i="lg-free">свободно</span></li>
+      <li><i style="background:var(--few)"></i><span data-i="lg-few">мало мест</span></li>
+      <li><i style="background:var(--busy)"></i><span data-i="lg-full">всё занято</span></li>
+      <li><i style="background:var(--off)"></i><span data-i="lg-off">нельзя записаться</span></li>
+    </ul>
+    <div class="cal">
+      <p class="state" id="cal-state" data-i="loading">Загружаем свободное время…</p>
+      <div id="cal-body" hidden>
+        <div class="cal-h"><b id="cal-month"></b><span id="cal-dur"></span></div>
+        <div class="grid" id="cal-grid"></div>
+      </div>
+    </div>
+    <p class="tlabel" id="t-label"></p>
+    <div class="times" id="times"></div>
+    <p class="empty" id="t-empty" hidden></p>
+  </section>
+
+  <section id="s-contact" aria-labelledby="h-contact">
+    <h2 id="h-contact"><span class="n">3</span><span data-i="h3">Контакты</span></h2>
+    <form class="fields" id="form" novalidate>
+      <div class="f">
+        <label for="name" data-i="l-name">Имя</label>
+        <input id="name" name="name" autocomplete="given-name" maxlength="60">
+        <p class="err" id="e-name" hidden></p>
+      </div>
+      <div class="f">
+        <label for="phone" data-i="l-phone">Телефон</label>
+        <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+995 555 12 34 56" maxlength="25">
+        <p class="err" id="e-phone" hidden></p>
+      </div>
+      <div class="f">
+        <label for="insta">Instagram <small data-i="opt">необязательно</small></label>
+        <input id="insta" name="insta" autocomplete="off" placeholder="@username" maxlength="60">
+      </div>
+      <div class="f">
+        <span class="lbl" data-i="l-src">Откуда узнали?</span>
+        <div class="chips" id="src"></div>
+      </div>
+      <div class="f">
+        <label for="comment"><span data-i="l-comment">Комментарий</span> <small data-i="opt2">необязательно</small></label>
+        <textarea id="comment" name="comment" maxlength="300"></textarea>
+      </div>
+      <div class="hp" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+      <p class="alert" id="send-err" hidden></p>
+    </form>
+  </section>
+
+  <footer>
+    <span>📍 35/37 Zhiuli Shartava St, Saburtalo · <span data-i="landmark">ориентир — аптека PSP, спускайтесь вниз</span></span>
+    <a href="https://maps.app.goo.gl/EWKE2w7sfYEYwMq78" target="_blank" rel="noopener" data-i="map">Открыть на карте</a>
+    <a href="https://instagram.com/so.hryhorieva" target="_blank" rel="noopener">Instagram · so.hryhorieva</a>
+  </footer>
+</div>
+
+<div class="bar" id="bar">
+  <div class="bar-in">
+    <div class="bar-sum" id="bar-sum"></div>
+    <button type="button" class="btn" id="go"></button>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const HOOK="https://hook.eu1.make.com/s0fbh6p7zdroj3pdpei6stw42gnuta14";
+const FALLBACK="https://tally.so/r/WOGJrR";
+const BOT="https://t.me/so_hryhorieva_bot";
+
+const SERVICES=[
+ {id:1,cat:"brows",ru:"Коррекция бровей",en:"Brow shaping",price:25,dur:30},
+ {id:2,cat:"brows",ru:"Ламинирование бровей",en:"Brow lamination",price:60,dur:30},
+ {id:3,cat:"brows",ru:"Окрашивание бровей",en:"Brow tint",price:30,dur:30},
+ {id:4,cat:"brows",ru:"Коррекция + окрашивание бровей",en:"Brow shaping + tint",price:50,dur:60},
+ {id:5,cat:"brows",ru:"Ламинирование + коррекция + окрашивание бровей",en:"Brow lamination + shaping + tint",price:80,dur:90},
+ {id:6,cat:"lashes",ru:"Окрашивание ресниц",en:"Lash tint",price:15,dur:30},
+ {id:7,cat:"lashes",ru:"Ламинирование + окрашивание ресниц",en:"Lash lamination + tint",price:80,dur:90},
+ {id:8,cat:"combo",ru:"Ламинирование ресниц + коррекция и окрашивание бровей",en:"Lash lamination + brow shaping & tint",price:110,dur:120},
+ {id:9,cat:"combo",ru:"Ламинирование ресниц + ламинирование, коррекция и окрашивание бровей",en:"Lash lamination + brow lamination, shaping & tint",price:130,dur:150},
+ {id:10,cat:"wax",ru:"Только депиляция",en:"Waxing only",price:0,dur:0,waxOnly:true}
+];
+/* exact option texts the Make scenario expects */
+const SVC_KEY={1:"Коррекция бровей / Brow shaping — 25 ₾",2:"Ламинирование бровей / Brow lamination — 60 ₾",3:"Окрашивание бровей / Brow tint — 30 ₾",
+ 4:"Коррекция + окрашивание бровей / Brow shaping + tint — 50 ₾",5:"Ламинирование + коррекция + окрашивание бровей / Brow lamination + shaping + tint — 80 ₾",
+ 6:"Окрашивание ресниц / Lash tint — 15 ₾",7:"Ламинирование + окрашивание ресниц / Lash lamination + tint — 80 ₾",
+ 8:"Ламинирование ресниц + коррекция и окрашивание бровей / Lash lamination + brow shaping & tint — 110 ₾",
+ 9:"Ламинирование ресниц + ламинирование, коррекция и окрашивание бровей / Lash lamination + brow lamination, shaping & tint — 130 ₾",
+ 10:"Только депиляция / Waxing only — 10 ₾ за зону / per zone"};
+const CATS={brows:{ru:"Брови",en:"Brows"},lashes:{ru:"Ресницы",en:"Lashes"},combo:{ru:"Комплексы",en:"Combos"},wax:{ru:"Депиляция",en:"Waxing"}};
+const SOURCES=[{ru:"Instagram",en:"Instagram",key:"Instagram"},{ru:"Друзья",en:"Friends",key:"Друзья / Friends"},{ru:"Google",en:"Google",key:"Google"},{ru:"Другое",en:"Other",key:"Другое / Other"}];
+const T={
+ ru:{title:"Онлайн запись",sub:"Брови и ресницы · Тбилиси, Сабуртало",hours:"Пн–Пт · 13:00–18:00",window:"С завтра и на 2 недели вперёд",
+  h1:"Процедура",h2:"День и время",h3:"Контакты",loading:"Загружаем свободное время…",
+  "lg-free":"свободно","lg-few":"мало мест","lg-full":"всё занято","lg-off":"нельзя записаться",
+  "l-name":"Имя","l-phone":"Телефон",opt:"необязательно",opt2:"необязательно","l-src":"Откуда узнали?","l-comment":"Комментарий",
+  landmark:"ориентир — аптека PSP, спускайтесь вниз",map:"Открыть на карте",
+  min:"мин",waxT:"Депиляция",waxAdd:"+10 ₾ за зону, время не меняется",waxOnly:"10 ₾ и 10 мин за зону, от 1 до 3",perZone:"10 ₾ за зону",
+  dur:d=>"процедура "+d+" мин",free:n=>"свободно: "+n,pick:"Выберите день в календаре",
+  noTimes:"На этот день свободного времени нет. Выберите другой день.",
+  loadErr:"Не получилось загрузить расписание. Обновите страницу или запишитесь через ",loadErrLink:"запасную форму",
+  barPickTime:"Выберите время",barNext:"Дальше",barBook:"Записаться",sending:"Отправляем…",
+  eName:"Напишите имя",ePhone:"Проверьте номер: нужно минимум 9 цифр",
+  busyNow:"Это время только что заняли. Выберите, пожалуйста, другое.",rulesErr:"На это время записаться нельзя. Выберите другой день или время.",
+  sendErr:"Не получилось отправить. Проверьте интернет и попробуйте ещё раз.",
+  doneT:"Вы записаны",doneP:"Соня получила вашу запись и свяжется с вами, если нужно что-то уточнить.",
+  doneTg:"Хотите подтверждение в Telegram? Нажмите кнопку ниже, а в боте — «Запустить» (Start). Подтверждение придёт сразу.",
+  dSvc:"Процедура",dWhen:"Когда",dPrice:"Стоимость",dWhere:"Адрес",tg:"Получить подтверждение в Telegram",again:"Записаться ещё",
+  rules:"Если у вас аллергия, гормональный сбой или беременность, предупредите заранее. Отменить или перенести можно не позже чем за 4 часа.",
+  dows:["Пн","Вт","Ср","Чт","Пт","Сб","Вс"],loc:"ru-RU",zonesWord:n=>n+" "+(n===1?"зона":"зоны"),dayoff:"не работает",
+  mineT:"Ваши записи",linkT:"Отмена записи",linkP:"Вы перешли по ссылке для отмены записи.",
+  cancel:"Отменить запись",cancelQ:"Точно отменить?",yes:"Да, отменить",no:"Нет",cancelling:"Отменяем…",
+  cOk:"Запись отменена. Время снова свободно.",cAlready:"Эта запись уже отменена.",
+  cLate:"До визита меньше 4 часов, отменить онлайн уже нельзя. Напишите Соне в ",cLateLink:"Instagram",
+  cInvalid:"Ссылка для отмены недействительна.",cErr:"Не получилось отменить. Попробуйте ещё раз.",
+  cRule:"Отменить онлайн можно не позже чем за 4 часа до визита."},
+ en:{title:"Online booking",sub:"Brows & lashes · Tbilisi, Saburtalo",hours:"Mon–Fri · 1:00–6:00 pm",window:"From tomorrow, up to 2 weeks ahead",
+  h1:"Service",h2:"Day and time",h3:"Contact details",loading:"Loading available times…",
+  "lg-free":"available","lg-few":"few slots","lg-full":"fully booked","lg-off":"not bookable",
+  "l-name":"Name","l-phone":"Phone",opt:"optional",opt2:"optional","l-src":"How did you find me?","l-comment":"Comment",
+  landmark:"landmark: PSP pharmacy, come downstairs",map:"Open in Maps",
+  min:"min",waxT:"Waxing",waxAdd:"+10 ₾ per zone, no extra time",waxOnly:"10 ₾ and 10 min per zone, 1 to 3",perZone:"10 ₾ per zone",
+  dur:d=>d+" min appointment",free:n=>"available: "+n,pick:"Pick a day in the calendar",
+  noTimes:"No free time on this day. Please pick another day.",
+  loadErr:"Couldn't load the schedule. Refresh the page or book via the ",loadErrLink:"backup form",
+  barPickTime:"Pick a time",barNext:"Next",barBook:"Book",sending:"Sending…",
+  eName:"Enter your name",ePhone:"Check the number: at least 9 digits",
+  busyNow:"Someone just booked this time. Please pick another one.",rulesErr:"This time can't be booked. Please pick another day or time.",
+  sendErr:"Couldn't send. Check your connection and try again.",
+  doneT:"You're booked",doneP:"Sonya has your booking and will contact you if anything needs clarifying.",
+  doneTg:"Want a confirmation in Telegram? Tap the button below, then “Start” in the bot. It arrives right away.",
+  dSvc:"Service",dWhen:"When",dPrice:"Price",dWhere:"Address",tg:"Get confirmation in Telegram",again:"Book again",
+  rules:"If you have allergies, hormonal issues or are pregnant, please let me know in advance. Cancel or reschedule at least 4 hours before.",
+  dows:["Mo","Tu","We","Th","Fr","Sa","Su"],loc:"en-GB",zonesWord:n=>n+" "+(n===1?"zone":"zones"),dayoff:"day off",
+  mineT:"Your bookings",linkT:"Cancel booking",linkP:"You opened a link to cancel your booking.",
+  cancel:"Cancel booking",cancelQ:"Cancel for sure?",yes:"Yes, cancel",no:"No",cancelling:"Cancelling…",
+  cOk:"Booking cancelled. The time is free again.",cAlready:"This booking is already cancelled.",
+  cLate:"Less than 4 hours left, so it can't be cancelled online. Please message Sonya on ",cLateLink:"Instagram",
+  cInvalid:"This cancel link isn't valid.",cErr:"Couldn't cancel. Please try again.",
+  cRule:"You can cancel online up to 4 hours before your visit."}
+};
+const OPEN=13*60, LAST=18*60, STEP=30;
+const STARTS=[];for(let m=OPEN;m<=LAST;m+=STEP)STARTS.push(m);
+const hhmm=m=>String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
+const $=id=>document.getElementById(id);
+
+let lang=(navigator.language||"ru").toLowerCase().startsWith("ru")||(navigator.language||"").toLowerCase().startsWith("uk")?"ru":"en";
+let svcId=1,zones=0,dateKey=null,time=null,source=null,sending=false;
+let loaded=false,loadFailed=false,busy={},todayKey=null;
+
+/* dates are handled as Tbilisi calendar days using UTC Date objects */
+const dFromKey=k=>{const[y,m,d]=k.split("-").map(Number);return new Date(Date.UTC(y,m-1,d))};
+const keyOf=d=>d.toISOString().slice(0,10);
+const addDays=(d,n)=>new Date(d.getTime()+n*86400000);
+const minKey=()=>keyOf(addDays(dFromKey(todayKey),1));
+const maxKey=()=>keyOf(addDays(dFromKey(todayKey),14));
+
+function parseBusy(sStr,eStr){
+  const out={};if(!sStr)return out;
+  const S=sStr.split("|"),E=eStr.split("|");
+  for(let i=0;i<S.length;i++){
+    if(!S[i]||!E[i])continue;
+    const sk=S[i].slice(0,10),ek=E[i].slice(0,10);
+    const sm=+S[i].slice(11,13)*60+ +S[i].slice(14,16),em=+E[i].slice(11,13)*60+ +E[i].slice(14,16);
+    let d=dFromKey(sk);const end=dFromKey(ek);
+    while(d<=end){const k=keyOf(d);const a=k===sk?sm:0,b=k===ek?em:1440;
+      if(b>a)(out[k]=out[k]||[]).push([a,b]);d=addDays(d,1)}
+  }
+  return out;
+}
+function svc(){return SERVICES.find(s=>s.id===svcId)}
+function effZones(){return svc().waxOnly?Math.max(zones,1):zones}
+function duration(){return svc().dur+(svc().waxOnly?effZones()*10:0)}
+function price(){return(svc().waxOnly?0:svc().price)+effZones()*10}
+function isDayOff(k){return(busy[k]||[]).some(([a,b])=>a<=OPEN&&b>=LAST+STEP)}
+function freeStarts(k){const list=busy[k]||[];const d=duration();return STARTS.filter(s=>!list.some(([a,b])=>s<b&&s+d>a))}
+function dayStatus(d){
+  const k=keyOf(d),w=d.getUTCDay();
+  if(k<minKey()||k>maxKey()||w===0||w===6)return"off";
+  if(isDayOff(k))return"dayoff";
+  const n=freeStarts(k).length;return n===0?"full":n<=3?"few":"free";
+}
+const fmt=(opts)=>new Intl.DateTimeFormat(T[lang].loc,Object.assign({timeZone:"UTC"},opts));
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+
+function applyText(){
+  const L=T[lang];document.documentElement.lang=lang;
+  document.querySelectorAll("[data-i]").forEach(el=>{const v=L[el.dataset.i];if(typeof v==="string")el.textContent=v});
+  $("lang-ru").setAttribute("aria-pressed",lang==="ru");$("lang-en").setAttribute("aria-pressed",lang==="en");
+  $("name").placeholder=lang==="ru"?"Нино":"Nino";document.title=L.title;
+}
+function renderServices(){
+  const L=T[lang],box=$("services");box.innerHTML="";
+  Object.keys(CATS).forEach(c=>{
+    const g=document.createElement("p");g.className="glabel";g.textContent=CATS[c][lang];box.appendChild(g);
+    SERVICES.filter(s=>s.cat===c).forEach(s=>{
+      const b=document.createElement("button");b.type="button";b.className="svc";b.setAttribute("aria-pressed",s.id===svcId);
+      b.innerHTML='<span class="nm"></span><span class="pr"></span><span class="du"></span>';
+      b.querySelector(".nm").textContent=s[lang];
+      b.querySelector(".pr").textContent=s.waxOnly?L.perZone:s.price+" ₾";
+      b.querySelector(".du").textContent=s.waxOnly?L.waxOnly:s.dur+" "+L.min;
+      b.onclick=()=>{const wasWax=svc().waxOnly;svcId=s.id;if(s.waxOnly){if(zones<1)zones=1}else if(wasWax){zones=0}renderAll()};
+      box.appendChild(b);
+    });
+  });
+}
+function renderZones(){
+  const L=T[lang],s=svc();
+  $("z-title").textContent=s.waxOnly?L.waxT+" — "+L.zonesWord(effZones()):L.waxT;
+  $("z-hint").textContent=s.waxOnly?L.waxOnly:L.waxAdd;
+  $("z-val").textContent=effZones();
+  $("z-minus").disabled=effZones()<=(s.waxOnly?1:0);
+  $("z-plus").disabled=effZones()>=3;
+}
+function renderCal(){
+  const L=T[lang],st=$("cal-state");
+  if(!loaded){
+    $("cal-body").hidden=true;st.hidden=false;
+    if(loadFailed){st.textContent=L.loadErr;const a=document.createElement("a");a.href=FALLBACK;a.target="_blank";a.rel="noopener";a.textContent=L.loadErrLink;st.appendChild(a);st.appendChild(document.createTextNode("."))}
+    else st.textContent=L.loading;
+    return;
+  }
+  st.hidden=true;$("cal-body").hidden=false;
+  const grid=$("cal-grid");grid.innerHTML="";
+  L.dows.forEach(x=>{const e=document.createElement("div");e.className="dow";e.textContent=x;grid.appendChild(e)});
+  const today=dFromKey(todayKey),maxD=dFromKey(maxKey()),minD=dFromKey(minKey());
+  const start=addDays(today,-((today.getUTCDay()+6)%7));
+  const end=addDays(maxD,(7-maxD.getUTCDay())%7);
+  const m1=fmt({month:"long"}).format(minD),m2=fmt({month:"long"}).format(maxD);
+  $("cal-month").textContent=(m1===m2?m1:m1+" – "+m2)+" "+maxD.getUTCFullYear();
+  $("cal-dur").textContent=L.dur(duration());
+  const longF=fmt({weekday:"long",day:"numeric",month:"long"});
+  for(let d=start;d<=end;d=addDays(d,1)){
+    const s=dayStatus(d),k=keyOf(d);
+    const b=document.createElement("button");b.type="button";b.className="day "+s+(k===todayKey?" today":"");
+    b.innerHTML='<span class="num">'+d.getUTCDate()+'</span><span class="dot"></span>';
+    const label=longF.format(d)+" — "+(s==="dayoff"?L.dayoff:L["lg-"+s]);
+    b.setAttribute("aria-label",label);b.title=label;
+    if(s==="free"||s==="few"){b.setAttribute("aria-pressed",k===dateKey);b.onclick=()=>{dateKey=k;time=null;hideErr();renderAll()}}
+    else b.disabled=true;
+    grid.appendChild(b);
+  }
+}
+function renderTimes(){
+  const L=T[lang],box=$("times"),lbl=$("t-label"),emp=$("t-empty");box.innerHTML="";
+  if(!loaded){lbl.textContent="";emp.hidden=true;return}
+  if(!dateKey){lbl.textContent=L.pick;emp.hidden=true;return}
+  const free=freeStarts(dateKey);
+  lbl.innerHTML="";const b=document.createElement("b");b.textContent=cap(fmt({weekday:"long",day:"numeric",month:"long"}).format(dFromKey(dateKey)));lbl.appendChild(b);
+  lbl.appendChild(document.createTextNode(" · "+L.free(free.length)));
+  STARTS.forEach(s=>{
+    const btn=document.createElement("button");btn.type="button";btn.className="t";btn.textContent=hhmm(s);
+    if(free.includes(s)){btn.setAttribute("aria-pressed",time===s);btn.onclick=()=>{time=s;hideErr();renderTimes();renderBar()}}
+    else{btn.classList.add("busy");btn.disabled=true;btn.setAttribute("aria-label",hhmm(s)+" — "+L["lg-full"])}
+    box.appendChild(btn);
+  });
+  emp.hidden=free.length>0;emp.textContent=L.noTimes;
+}
+function renderSources(){
+  const box=$("src");box.innerHTML="";
+  SOURCES.forEach((s,i)=>{const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=s[lang];
+    b.setAttribute("aria-pressed",source===i);b.onclick=()=>{source=source===i?null:i;renderSources()};box.appendChild(b)});
+}
+function svcLabel(){const L=T[lang],s=svc();
+  if(s.waxOnly)return L.waxT+" ("+L.zonesWord(effZones())+")";
+  return s[lang]+(zones?" + "+L.waxT.toLowerCase()+" ("+L.zonesWord(zones)+")":"")}
+function whenLabel(long){if(!dateKey)return"";
+  const f=fmt(long?{weekday:"long",day:"numeric",month:"long"}:{weekday:"short",day:"numeric",month:"short"}).format(dFromKey(dateKey));
+  return cap(f)+(time!==null?", "+hhmm(time):"")}
+function contactsOk(){return $("name").value.trim().length>=2&&$("phone").value.replace(/\D/g,"").length>=9}
+function renderBar(){
+  const L=T[lang],sum=$("bar-sum");sum.innerHTML="";
+  const b=document.createElement("b");b.textContent=svcLabel();sum.appendChild(b);
+  const sp=document.createElement("span");sp.textContent=(whenLabel(false)||L.pick)+" · "+price()+" ₾ · "+duration()+" "+L.min;sum.appendChild(sp);
+  const go=$("go");go.disabled=sending;
+  go.textContent=sending?L.sending:time===null?L.barPickTime:contactsOk()?L.barBook:L.barNext;
+}
+function renderAll(){
+  if(loaded&&dateKey){const st=dayStatus(dFromKey(dateKey));if(st!=="free"&&st!=="few"){dateKey=null;time=null}}
+  if(loaded&&dateKey&&time!==null&&!freeStarts(dateKey).includes(time))time=null;
+  applyText();renderServices();renderZones();renderCal();renderTimes();renderSources();renderBar();
+}
+function showErr(msg){const e=$("send-err");e.textContent=msg;e.hidden=false}
+function hideErr(){$("send-err").hidden=true}
+function validate(){
+  const L=T[lang];const n=$("name").value.trim(),p=$("phone").value.replace(/\D/g,"");
+  $("e-name").hidden=n.length>=2;$("e-name").textContent=L.eName;
+  $("e-phone").hidden=p.length>=9;$("e-phone").textContent=L.ePhone;
+  if(n.length<2){$("name").focus();return false}
+  if(p.length<9){$("phone").focus();return false}
+  return true;
+}
+function post(fields){
+  const body=new URLSearchParams(fields);
+  return fetch(HOOK,{method:"POST",body}).then(r=>r.text()).then(t=>{try{return JSON.parse(t)}catch(e){throw new Error("bad response")}});
+}
+function loadSlots(){
+  return post({action:"slots"}).then(j=>{
+    if(!j||!j.ok||!j.now)throw new Error("no data");
+    todayKey=j.now.slice(0,10);busy=parseBusy(j.s,j.e);loaded=true;loadFailed=false;
+    if(!dateKey){let d=dFromKey(minKey());const end=dFromKey(maxKey());
+      while(d<=end){const s=dayStatus(d);if(s==="free"||s==="few"){dateKey=keyOf(d);break}d=addDays(d,1)}}
+    renderAll();
+  }).catch(()=>{loadFailed=!loaded;renderAll()});
+}
+function book(){
+  const L=T[lang];
+  if($("website").value){return}
+  let phone=$("phone").value.trim();if(!phone.startsWith("+")){const dg=phone.replace(/\D/g,"");phone=(dg.length===9?"+995":"+")+dg}
+  const payload={action:"book",lang:lang==="en"?"English":"Русский",service:SVC_KEY[svcId],
+    zones:effZones()?String(effZones()):"Не нужно / Not needed",date:dateKey,time:hhmm(time),
+    name:$("name").value.trim(),phone:phone,instagram:$("insta").value.trim(),
+    source:source===null?"":SOURCES[source].key,comment:$("comment").value.trim()};
+  sending=true;hideErr();renderBar();
+  post(payload).then(j=>{
+    sending=false;
+    if(j&&j.status==="booked"){showDone(j);return}
+    if(j&&j.status==="busy"){showErr(L.busyNow);time=null;loadSlots().then(()=>$("s-date").scrollIntoView({behavior:"smooth",block:"start"}));return}
+    if(j&&j.status==="rules"){showErr(L.rulesErr);time=null;renderAll();return}
+    throw new Error("unknown");
+  }).catch(()=>{sending=false;showErr(L.sendErr);renderBar()});
+}
+/* saved bookings live only in this browser, used to show "Your bookings" with a cancel button */
+const STORE="sonya_bookings_v1";
+function getSaved(){try{const a=JSON.parse(localStorage.getItem(STORE)||"[]");return Array.isArray(a)?a:[]}catch(e){return[]}}
+function setSaved(a){try{localStorage.setItem(STORE,JSON.stringify(a))}catch(e){}}
+function saveBooking(b){const a=getSaved().filter(x=>x.id!==b.id);a.push(b);setSaved(a)}
+function removeSaved(id){setSaved(getSaved().filter(x=>x.id!==id))}
+function upcoming(){const now=Date.now();return getSaved().filter(x=>x&&x.id&&x.ts>now).sort((a,b)=>a.ts-b.ts)}
+const qp=new URLSearchParams(location.search);
+const linkCancel=qp.get("cancel")&&qp.get("t")?{id:qp.get("cancel"),t:qp.get("t")}:null;
+
+function cancelUI(box,id,t,after){
+  const L=T[lang];box.innerHTML="";
+  const row=document.createElement("div");row.className="row";
+  const msg=document.createElement("p");msg.className="msg";msg.hidden=true;
+  const say=(cls,text,link)=>{msg.hidden=false;msg.className="msg "+cls;msg.textContent=text;
+    if(link){const a=document.createElement("a");a.href=link;a.target="_blank";a.rel="noopener";a.textContent=L.cLateLink;msg.appendChild(a);msg.appendChild(document.createTextNode("."))}};
+  const start=()=>{row.innerHTML="";
+    const b=document.createElement("button");b.type="button";b.className="link-btn";b.textContent=L.cancel;
+    b.onclick=()=>{row.innerHTML="";
+      const q=document.createElement("span");q.className="msg";q.textContent=L.cancelQ;
+      const y=document.createElement("button");y.type="button";y.className="link-btn";y.textContent=L.yes;
+      const n=document.createElement("button");n.type="button";n.className="link-btn plain";n.textContent=L.no;
+      n.onclick=start;
+      y.onclick=()=>{y.disabled=n.disabled=true;y.textContent=L.cancelling;
+        post({action:"cancel",id:id,t:t}).then(j=>{
+          const s=j&&j.status;row.innerHTML="";
+          if(s==="cancelled"){say("ok",L.cOk);removeSaved(id);loadSlots();if(after)after()}
+          else if(s==="already"){say("",L.cAlready);removeSaved(id)}
+          else if(s==="late"){say("bad",L.cLate,"https://ig.me/m/so.hryhorieva")}
+          else if(s==="invalid"){say("bad",L.cInvalid)}
+          else throw new Error("unknown");
+        }).catch(()=>{start();say("bad",L.cErr)});
+      };
+      row.append(q,y,n);
+    };
+    row.appendChild(b);
+  };
+  start();box.append(row,msg);
+}
+function renderMine(){
+  const L=T[lang],box=$("mine");
+  const list=upcoming().filter(b=>!linkCancel||b.id!==linkCancel.id);
+  if((!list.length&&!linkCancel)||!$("done").hidden){box.hidden=true;box.innerHTML="";return}
+  box.hidden=false;box.innerHTML="";
+  const h=document.createElement("h3");h.textContent=linkCancel?L.linkT:L.mineT;box.appendChild(h);
+  if(linkCancel){
+    const p=document.createElement("p");p.className="note";p.textContent=L.linkP;box.appendChild(p);
+    const d=document.createElement("div");d.className="bk";box.appendChild(d);cancelUI(d,linkCancel.id,linkCancel.t);
+  }
+  list.forEach(b=>{
+    const d=document.createElement("div");d.className="bk";
+    const s=document.createElement("b");s.textContent=b.svc;const w=document.createElement("span");w.className="msg";w.textContent=b.when;
+    const c=document.createElement("div");d.append(s,w,c);box.appendChild(d);cancelUI(c,b.id,b.t);
+  });
+  const r=document.createElement("p");r.className="note";r.textContent=L.cRule;box.appendChild(r);
+}
+function showDone(j){
+  const L=T[lang];
+  const ts=dFromKey(dateKey).getTime()+time*60000-4*3600000;
+  const savedSvc=svcLabel(),savedWhen=whenLabel(true);
+  if(j.id&&j.t)saveBooking({id:j.id,t:j.t,svc:savedSvc,when:savedWhen,ts:ts});
+  (busy[dateKey]=busy[dateKey]||[]).push([time,time+duration()]);
+  const d=$("done");d.hidden=false;d.innerHTML="";
+  const h=document.createElement("h2");h.textContent=L.doneT+" 🤍";d.appendChild(h);
+  const p=document.createElement("p");p.className="note";p.textContent=L.doneP;d.appendChild(p);
+  const ul=document.createElement("ul");ul.className="sum";
+  [[L.dSvc,svcLabel()],[L.dWhen,whenLabel(true)],[L.dPrice,price()+" ₾ · "+duration()+" "+L.min],[L.dWhere,"35/37 Zhiuli Shartava St"]].forEach(([a,v])=>{
+    const li=document.createElement("li");const s=document.createElement("span");s.textContent=a;const b=document.createElement("b");b.textContent=v;li.append(s,b);ul.appendChild(li)});
+  d.appendChild(ul);
+  const r=document.createElement("p");r.className="note";r.textContent=L.rules;d.appendChild(r);
+  const t=document.createElement("p");t.className="note";t.textContent=L.doneTg;d.appendChild(t);
+  const a=document.createElement("a");a.className="btn";a.href=(j.id&&j.t)?BOT+"?start=bk_"+j.id+"_"+j.t:BOT;a.target="_blank";a.rel="noopener";a.textContent=L.tg;d.appendChild(a);
+  if(j.id&&j.t){const cb=document.createElement("div");cb.className="bk";d.appendChild(cb);
+    cancelUI(cb,j.id,j.t);const cr=document.createElement("p");cr.className="note";cr.textContent=L.cRule;d.appendChild(cr)}
+  const again=document.createElement("button");again.type="button";again.className="btn ghost";again.textContent=L.again;
+  again.onclick=()=>{setDone(false);time=null;["name","phone","insta","comment"].forEach(i=>$(i).value="");source=null;renderAll();renderMine();window.scrollTo({top:0})};
+  d.appendChild(again);
+  time=null;renderAll();
+  setDone(true);window.scrollTo({top:0});
+}
+function setDone(on){
+  document.body.classList.toggle("is-done",on);
+  $("done").hidden=!on;$("bar").hidden=on;
+  ["s-service","s-date","s-contact"].forEach(i=>{$(i).hidden=on});
+  if(on)$("mine").hidden=true;
+}
+$("go").onclick=()=>{
+  if(sending)return;
+  if(!loaded){$("s-date").scrollIntoView({behavior:"smooth",block:"start"});return}
+  if(time===null){$("s-date").scrollIntoView({behavior:"smooth",block:"start"});return}
+  if(!contactsOk()){$("s-contact").scrollIntoView({behavior:"smooth",block:"start"});validate();return}
+  if(validate())book();
+};
+$("form").addEventListener("submit",e=>{e.preventDefault();$("go").click()});
+["name","phone"].forEach(i=>$(i).addEventListener("input",()=>{$("e-"+i).hidden=true;renderBar()}));
+$("z-minus").onclick=()=>{zones=Math.max(svc().waxOnly?1:0,effZones()-1);renderAll()};
+$("z-plus").onclick=()=>{zones=Math.min(3,effZones()+1);renderAll()};
+$("lang-ru").onclick=()=>{lang="ru";renderAll();renderMine()};
+$("lang-en").onclick=()=>{lang="en";renderAll();renderMine()};
+
+renderAll();
+renderMine();
+loadSlots();
+})();
+</script>
+</body>
+</html>
