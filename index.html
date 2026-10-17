@@ -173,6 +173,7 @@ footer a{color:var(--ink)}
     <p class="sub" data-i="sub">Брови и ресницы · Тбилиси, Сабуртало</p>
     <ul class="facts">
       <li data-i="hours">Пн–Пт · 13:00–18:00</li>
+      <li data-i="wknd" id="wknd" hidden>Сб–Вс · по отдельным дням, 13:00–17:00</li>
       <li data-i="window">С завтра и на 2 недели вперёд</li>
     </ul>
   </header>
@@ -286,7 +287,7 @@ const SVC_KEY={1:"Коррекция бровей / Brow shaping — 25 ₾",2:"
 const CATS={brows:{ru:"Брови",en:"Brows"},lashes:{ru:"Ресницы",en:"Lashes"},combo:{ru:"Комплексы",en:"Combos"},wax:{ru:"Депиляция",en:"Waxing"}};
 const SOURCES=[{ru:"Instagram",en:"Instagram",key:"Instagram"},{ru:"Друзья",en:"Friends",key:"Друзья / Friends"},{ru:"Google",en:"Google",key:"Google"},{ru:"Другое",en:"Other",key:"Другое / Other"}];
 const T={
- ru:{title:"Онлайн запись",sub:"Брови и ресницы · Тбилиси, Сабуртало",hours:"Пн–Пт · 13:00–18:00",window:"С завтра и на 2 недели вперёд",
+ ru:{title:"Онлайн запись",sub:"Брови и ресницы · Тбилиси, Сабуртало",hours:"Пн–Пт · 13:00–18:00",wknd:"Сб–Вс · по отдельным дням, 13:00–17:00",window:"С завтра и на 2 недели вперёд",
   h1:"Процедура",h2:"День и время",h3:"Контакты",loading:"Загружаем свободное время…",
   "lg-free":"свободно","lg-few":"мало мест","lg-full":"всё занято","lg-off":"нельзя записаться",
   "l-name":"Имя","l-phone":"Телефон",opt:"необязательно",opt2:"необязательно","l-src":"Откуда узнали?","l-comment":"Комментарий",
@@ -310,7 +311,7 @@ const T={
   cLate:"До визита меньше 10 часов, отменить онлайн уже нельзя. Напишите Соне в ",cLateLink:"Instagram",
   cInvalid:"Ссылка для отмены недействительна.",cErr:"Не получилось отменить. Попробуйте ещё раз.",
   cRule:"Отменить онлайн можно не позже чем за 10 часов до визита."},
- en:{title:"Online booking",sub:"Brows & lashes · Tbilisi, Saburtalo",hours:"Mon–Fri · 1:00–6:00 pm",window:"From tomorrow, up to 2 weeks ahead",
+ en:{title:"Online booking",sub:"Brows & lashes · Tbilisi, Saburtalo",hours:"Mon–Fri · 1:00–6:00 pm",wknd:"Sat–Sun · some days, 1:00–5:00 pm",window:"From tomorrow, up to 2 weeks ahead",
   h1:"Service",h2:"Day and time",h3:"Contact details",loading:"Loading available times…",
   "lg-free":"available","lg-few":"few slots","lg-full":"fully booked","lg-off":"not bookable",
   "l-name":"Name","l-phone":"Phone",opt:"optional",opt2:"optional","l-src":"How did you find me?","l-comment":"Comment",
@@ -335,14 +336,14 @@ const T={
   cInvalid:"This cancel link isn't valid.",cErr:"Couldn't cancel. Please try again.",
   cRule:"You can cancel online up to 10 hours before your visit."}
 };
-const OPEN=13*60, LAST=18*60, STEP=30;
+const OPEN=13*60, LAST=18*60, LAST_WE=17*60, STEP=30;
 const STARTS=[];for(let m=OPEN;m<=LAST;m+=STEP)STARTS.push(m);
 const hhmm=m=>String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
 const $=id=>document.getElementById(id);
 
 let lang=(navigator.language||"ru").toLowerCase().startsWith("ru")||(navigator.language||"").toLowerCase().startsWith("uk")?"ru":"en";
 let svcId=1,zones=0,dateKey=null,time=null,source=null,sending=false;
-let loaded=false,loadFailed=false,busy={},todayKey=null;
+let loaded=false,loadFailed=false,busy={},openDays={},todayKey=null,loading=false;
 
 /* dates are handled as Tbilisi calendar days using UTC Date objects */
 const dFromKey=k=>{const[y,m,d]=k.split("-").map(Number);return new Date(Date.UTC(y,m-1,d))};
@@ -368,11 +369,15 @@ function svc(){return SERVICES.find(s=>s.id===svcId)}
 function effZones(){return svc().waxOnly?Math.max(zones,1):zones}
 function duration(){return svc().dur+(svc().waxOnly?effZones()*10:0)}
 function price(){return(svc().waxOnly?0:svc().price)+effZones()*10}
-function isDayOff(k){return(busy[k]||[]).some(([a,b])=>a<=OPEN&&b>=LAST+STEP)}
-function freeStarts(k){const list=busy[k]||[];const d=duration();return STARTS.filter(s=>!list.some(([a,b])=>s<b&&s+d>a))}
+const isWeekend=k=>{const w=dFromKey(k).getUTCDay();return w===0||w===6};
+function lastFor(k){return isWeekend(k)?LAST_WE:LAST}
+function startsFor(k){const l=lastFor(k);return STARTS.filter(m=>m<=l)}
+function isDayOff(k){return(busy[k]||[]).some(([a,b])=>a<=OPEN&&b>=lastFor(k)+STEP)}
+function freeStarts(k){const list=busy[k]||[];const d=duration();return startsFor(k).filter(s=>!list.some(([a,b])=>s<b&&s+d>a))}
 function dayStatus(d){
   const k=keyOf(d),w=d.getUTCDay();
-  if(k<minKey()||k>maxKey()||w===0||w===6)return"off";
+  if(k<minKey()||k>maxKey())return"off";
+  if((w===0||w===6)&&!openDays[k])return"off";
   if(isDayOff(k))return"dayoff";
   const n=freeStarts(k).length;return n===0?"full":n<=3?"few":"free";
 }
@@ -444,7 +449,7 @@ function renderTimes(){
   const free=freeStarts(dateKey);
   lbl.innerHTML="";const b=document.createElement("b");b.textContent=cap(fmt({weekday:"long",day:"numeric",month:"long"}).format(dFromKey(dateKey)));lbl.appendChild(b);
   lbl.appendChild(document.createTextNode(" · "+L.free(free.length)));
-  STARTS.forEach(s=>{
+  startsFor(dateKey).forEach(s=>{
     const btn=document.createElement("button");btn.type="button";btn.className="t";btn.textContent=hhmm(s);
     if(free.includes(s)){btn.setAttribute("aria-pressed",time===s);btn.onclick=()=>{time=s;hideErr();renderTimes();renderBar()}}
     else{btn.classList.add("busy");btn.disabled=true;btn.setAttribute("aria-label",hhmm(s)+" — "+L["lg-full"])}
@@ -490,15 +495,33 @@ function post(fields){
   const body=new URLSearchParams(fields);
   return fetch(HOOK,{method:"POST",body}).then(r=>r.text()).then(t=>{try{return JSON.parse(t)}catch(e){throw new Error("bad response")}});
 }
-function loadSlots(){
-  return post({action:"slots"}).then(j=>{
-    if(!j||!j.ok||!j.now)throw new Error("no data");
-    todayKey=j.now.slice(0,10);busy=parseBusy(j.s,j.e);loaded=true;loadFailed=false;
-    if(!dateKey){let d=dFromKey(minKey());const end=dFromKey(maxKey());
-      while(d<=end){const s=dayStatus(d);if(s==="free"||s==="few"){dateKey=keyOf(d);break}d=addDays(d,1)}}
-    renderAll();
-  }).catch(()=>{loadFailed=!loaded;renderAll()});
+/* schedule is cached for 3 minutes in this browser: every server call costs Make operations */
+const SLOTS_CACHE="sonya_slots_v1",SLOTS_TTL=180000;
+function readCache(){try{const c=JSON.parse(localStorage.getItem(SLOTS_CACHE)||"null");return c&&c.j&&Date.now()-c.at<SLOTS_TTL?c.j:null}catch(e){return null}}
+function writeCache(j){try{localStorage.setItem(SLOTS_CACHE,JSON.stringify({at:Date.now(),j:j}))}catch(e){}}
+function dropCache(){try{localStorage.removeItem(SLOTS_CACHE)}catch(e){}}
+function applySlots(j){
+  todayKey=j.now.slice(0,10);busy=parseBusy(j.s,j.e);
+  openDays={};Object.keys(parseBusy(j.os||"",j.oe||"")).forEach(k=>{openDays[k]=true});
+  loaded=true;loadFailed=false;
+  if(!dateKey){let d=dFromKey(minKey());const end=dFromKey(maxKey());
+    while(d<=end){const s=dayStatus(d);if(s==="free"||s==="few"){dateKey=keyOf(d);break}d=addDays(d,1)}}
+  const we=$("wknd");if(we){let any=false;let d=dFromKey(minKey());const end=dFromKey(maxKey());
+    while(d<=end){const k=keyOf(d);if(isWeekend(k)&&openDays[k]){any=true;break}d=addDays(d,1)}we.hidden=!any}
+  renderAll();
 }
+function loadSlots(force){
+  if(!force){const c=readCache();if(c){applySlots(c);return Promise.resolve()}}
+  if(loading&&!force)return Promise.resolve();
+  loading=true;
+  return post({action:"slots"}).then(j=>{
+    loading=false;
+    if(!j||!j.ok||!j.now)throw new Error("no data");
+    writeCache(j);applySlots(j);
+  }).catch(()=>{loading=false;loadFailed=!loaded;renderAll()});
+}
+/* load the schedule only when the calendar is about to be seen */
+function ensureSlots(){if(!loaded&&!loading)loadSlots()}
 function book(){
   const L=T[lang];
   if($("website").value){return}
@@ -511,7 +534,7 @@ function book(){
   post(payload).then(j=>{
     sending=false;
     if(j&&j.status==="booked"){showDone(j);return}
-    if(j&&j.status==="busy"){showErr(L.busyNow);time=null;loadSlots().then(()=>$("s-date").scrollIntoView({behavior:"smooth",block:"start"}));return}
+    if(j&&j.status==="busy"){showErr(L.busyNow);time=null;dropCache();loadSlots(true).then(()=>$("s-date").scrollIntoView({behavior:"smooth",block:"start"}));return}
     if(j&&j.status==="rules"){showErr(L.rulesErr);time=null;renderAll();return}
     throw new Error("unknown");
   }).catch(()=>{sending=false;showErr(L.sendErr);renderBar()});
@@ -597,7 +620,7 @@ function showDone(j){
   const ts=dFromKey(dateKey).getTime()+time*60000-10*3600000;
   const savedSvc=svcLabel(),savedWhen=whenLabel(true);
   if(j.id&&j.t)saveBooking({id:j.id,t:j.t,svc:savedSvc,when:savedWhen,ts:ts,price:price(),dur:duration()});
-  (busy[dateKey]=busy[dateKey]||[]).push([time,time+duration()]);
+  (busy[dateKey]=busy[dateKey]||[]).push([time,time+duration()]);dropCache();
   const d=$("done");d.hidden=false;d.innerHTML="";
   const h=document.createElement("h2");h.textContent=L.doneT+" 🤍";d.appendChild(h);
   const p=document.createElement("p");p.className="note";p.textContent=L.doneP;d.appendChild(p);
@@ -624,7 +647,7 @@ function setDone(on){
 }
 $("go").onclick=()=>{
   if(sending)return;
-  if(!loaded){$("s-date").scrollIntoView({behavior:"smooth",block:"start"});return}
+  if(!loaded){ensureSlots();$("s-date").scrollIntoView({behavior:"smooth",block:"start"});return}
   if(time===null){$("s-date").scrollIntoView({behavior:"smooth",block:"start"});return}
   if(!contactsOk()){$("s-contact").scrollIntoView({behavior:"smooth",block:"start"});validate();return}
   if(validate())book();
@@ -638,7 +661,13 @@ $("lang-en").onclick=()=>{lang="en";renderAll();renderMine()};
 
 renderAll();
 renderMine();
-loadSlots();
+{const c=readCache();if(c)applySlots(c)}
+if(!loaded){
+  if("IntersectionObserver" in window){
+    const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){io.disconnect();ensureSlots()}},{rootMargin:"300px 0px"});
+    io.observe($("s-date"));
+  }else loadSlots();
+}
 })();
 </script>
 </body>
