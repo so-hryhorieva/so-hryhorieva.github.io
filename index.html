@@ -183,7 +183,7 @@ footer a{color:var(--ink)}
 
   <section id="s-service" aria-labelledby="h-service">
     <h2 id="h-service"><span class="n">1</span><span data-i="h1">Процедура</span></h2>
-    <p class="note" data-i="multi">Можно выбрать несколько процедур — время и цена сложатся. Нажмите ещё раз, чтобы убрать.</p>
+    <p class="note" data-i="multi">Можно выбрать несколько процедур — время и цена сложатся. Комплексы выбираются отдельно. Нажмите ещё раз, чтобы убрать.</p>
     <div id="services" class="group"></div>
     <div class="zones">
       <div class="zt"><b id="z-title">Депиляция</b><span id="z-hint"></span></div>
@@ -289,7 +289,7 @@ const CATS={brows:{ru:"Брови",en:"Brows"},lashes:{ru:"Ресницы",en:"L
 const SOURCES=[{ru:"Instagram",en:"Instagram",key:"Instagram"},{ru:"Друзья",en:"Friends",key:"Друзья / Friends"},{ru:"Google",en:"Google",key:"Google"},{ru:"Другое",en:"Other",key:"Другое / Other"}];
 const T={
  ru:{title:"Онлайн запись",sub:"Брови и ресницы · Тбилиси, Сабуртало",hours:"Пн–Пт · 13:00–18:00",wknd:"Сб–Вс · по отдельным дням, 13:00–17:00",window:"На завтра — до 22:00 сегодня, и на 2 недели вперёд",
-  h1:"Процедура",nSvc:n=>n+" "+(n<5?"процедуры":"процедур"),multi:"Можно выбрать несколько процедур — время и цена сложатся. Нажмите ещё раз, чтобы убрать.",h2:"День и время",h3:"Контакты",loading:"Загружаем свободное время…",
+  h1:"Процедура",nSvc:n=>n+" "+(n<5?"процедуры":"процедур"),multi:"Можно выбрать несколько процедур — время и цена сложатся. Комплексы выбираются отдельно. Нажмите ещё раз, чтобы убрать.",h2:"День и время",h3:"Контакты",loading:"Загружаем свободное время…",
   "lg-free":"свободно","lg-few":"мало мест","lg-full":"всё занято","lg-off":"нельзя записаться",
   "l-name":"Имя","l-phone":"Телефон",opt:"необязательно",opt2:"необязательно","l-src":"Откуда узнали?","l-comment":"Комментарий",
   landmark:"ориентир — аптека PSP, спускайтесь вниз",map:"Открыть на карте",
@@ -297,7 +297,7 @@ const T={
   dur:d=>"процедура "+d+" мин",free:n=>"свободно: "+n,pick:"Выберите день в календаре",
   noTimes:"На этот день свободного времени нет. Выберите другой день.",
   loadErr:"Не получилось загрузить расписание. Обновите страницу или запишитесь через ",loadErrLink:"запасную форму",
-  barPickTime:"Выберите время",barNext:"Дальше",barBook:"Записаться",sending:"Отправляем…",
+  barPickTime:"Выберите время",barPickSvc:"Выбрать процедуру",pickSvc:"Выберите процедуру",barNext:"Дальше",barBook:"Записаться",sending:"Отправляем…",
   eName:"Напишите имя",ePhone:"Проверьте номер: нужно минимум 9 цифр",
   busyNow:"Это время только что заняли. Выберите, пожалуйста, другое.",rulesErr:"На это время записаться нельзя. Выберите другой день или время.",
   sendErr:"Не получилось отправить. Проверьте интернет и попробуйте ещё раз.",
@@ -313,7 +313,7 @@ const T={
   cInvalid:"Ссылка для отмены недействительна.",cErr:"Не получилось отменить. Попробуйте ещё раз.",
   cRule:"Отменить онлайн можно не позже чем за 10 часов до визита."},
  en:{title:"Online booking",sub:"Brows & lashes · Tbilisi, Saburtalo",hours:"Mon–Fri · 1:00–6:00 pm",wknd:"Sat–Sun · some days, 1:00–5:00 pm",window:"Book for tomorrow until 10 pm today, up to 2 weeks ahead",
-  h1:"Service",nSvc:n=>n+" services",multi:"You can pick several services — time and price add up. Tap again to remove.",h2:"Day and time",h3:"Contact details",loading:"Loading available times…",
+  h1:"Service",nSvc:n=>n+" services",multi:"You can pick several services — time and price add up. Combos are booked on their own. Tap again to remove.",h2:"Day and time",h3:"Contact details",loading:"Loading available times…",
   "lg-free":"available","lg-few":"few slots","lg-full":"fully booked","lg-off":"not bookable",
   "l-name":"Name","l-phone":"Phone",opt:"optional",opt2:"optional","l-src":"How did you find me?","l-comment":"Comment",
   landmark:"landmark: PSP pharmacy, come downstairs",map:"Open in Maps",
@@ -321,7 +321,7 @@ const T={
   dur:d=>d+" min appointment",free:n=>"available: "+n,pick:"Pick a day in the calendar",
   noTimes:"No free time on this day. Please pick another day.",
   loadErr:"Couldn't load the schedule. Refresh the page or book via the ",loadErrLink:"backup form",
-  barPickTime:"Pick a time",barNext:"Next",barBook:"Book",sending:"Sending…",
+  barPickTime:"Pick a time",barPickSvc:"Choose a service",pickSvc:"Choose a service",barNext:"Next",barBook:"Book",sending:"Sending…",
   eName:"Enter your name",ePhone:"Check the number: at least 9 digits",
   busyNow:"Someone just booked this time. Please pick another one.",rulesErr:"This time can't be booked. Please pick another day or time.",
   sendErr:"Couldn't send. Check your connection and try again.",
@@ -343,7 +343,7 @@ const hhmm=m=>String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart
 const $=id=>document.getElementById(id);
 
 let lang=(navigator.language||"ru").toLowerCase().startsWith("ru")||(navigator.language||"").toLowerCase().startsWith("uk")?"ru":"en";
-let sel=[1],zones=0,dateKey=null,time=null,source=null,sending=false;
+let sel=[],zones=0,dateKey=null,time=null,source=null,sending=false;
 let loaded=false,loadFailed=false,busy={},openDays={},todayKey=null,nowH=0,loading=false;
 
 /* dates are handled as Tbilisi calendar days using UTC Date objects */
@@ -369,6 +369,7 @@ function parseBusy(sStr,eStr){
 /* several services can be booked together: price and time add up */
 const byId=id=>SERVICES.find(s=>s.id===id);
 function svc(){
+  if(!sel.length)return{id:0,waxOnly:false,dur:0,price:0,ru:"",en:""};
   if(sel.length===1)return byId(sel[0]);
   const list=sel.map(byId);
   return{id:0,waxOnly:false,dur:list.reduce((a,s)=>a+s.dur,0),price:list.reduce((a,s)=>a+s.price,0),
@@ -382,7 +383,7 @@ const isWeekend=k=>{const w=dFromKey(k).getUTCDay();return w===0||w===6};
 function lastFor(k){return isWeekend(k)?LAST_WE:LAST}
 function startsFor(k){const l=lastFor(k);return STARTS.filter(m=>m<=l)}
 function isDayOff(k){return(busy[k]||[]).some(([a,b])=>a<=OPEN&&b>=lastFor(k)+STEP)}
-function freeStarts(k){const list=busy[k]||[];const d=duration();return startsFor(k).filter(s=>!list.some(([a,b])=>s<b&&s+d>a))}
+function freeStarts(k){const list=busy[k]||[];const d=duration()||30;return startsFor(k).filter(s=>!list.some(([a,b])=>s<b&&s+d>a))}
 function dayStatus(d){
   const k=keyOf(d),w=d.getUTCDay();
   if(k<minKey()||k>maxKey())return"off";
@@ -409,7 +410,12 @@ function renderServices(){
       b.querySelector(".nm").textContent=s[lang];
       b.querySelector(".pr").textContent=s.waxOnly?L.perZone:s.price+" ₾";
       b.querySelector(".du").textContent=s.waxOnly?L.waxOnly:s.dur+" "+L.min;
-      b.onclick=()=>{if(s.waxOnly){sel=[s.id];if(zones<1)zones=1}else if(svc().waxOnly){sel=[s.id];zones=0}else if(sel.includes(s.id)){if(sel.length>1)sel=sel.filter(x=>x!==s.id)}else{sel=sel.concat(s.id)}renderAll()};
+      b.onclick=()=>{const solo=x=>x.waxOnly||x.cat==="combo";/* combos and waxing-only are booked on their own */
+        if(sel.includes(s.id)){sel=sel.filter(x=>x!==s.id);if(s.waxOnly)zones=0}
+        else if(s.waxOnly){sel=[s.id];if(zones<1)zones=1}
+        else if(svc().waxOnly){sel=[s.id];zones=0}
+        else if(solo(s)||sel.some(id=>solo(byId(id)))){sel=[s.id]}
+        else{sel=sel.concat(s.id)}renderAll()};
       box.appendChild(b);
     });
   });
@@ -438,7 +444,7 @@ function renderCal(){
   const end=addDays(maxD,(7-maxD.getUTCDay())%7);
   const m1=fmt({month:"long"}).format(minD),m2=fmt({month:"long"}).format(maxD);
   $("cal-month").textContent=(m1===m2?m1:m1+" – "+m2)+" "+maxD.getUTCFullYear();
-  $("cal-dur").textContent=L.dur(duration());
+  $("cal-dur").textContent=sel.length?L.dur(duration()):L.pickSvc;
   const longF=fmt({weekday:"long",day:"numeric",month:"long"});
   for(let d=start;d<=end;d=addDays(d,1)){
     const s=dayStatus(d),k=keyOf(d);
@@ -480,10 +486,10 @@ function whenLabel(long){if(!dateKey)return"";
 function contactsOk(){return $("name").value.trim().length>=2&&$("phone").value.replace(/\D/g,"").length>=9}
 function renderBar(){
   const L=T[lang],sum=$("bar-sum");sum.innerHTML="";
-  const b=document.createElement("b");b.textContent=sel.length>1?L.nSvc(sel.length)+(zones?" + "+L.waxT.toLowerCase():""):svcLabel();sum.appendChild(b);
-  const sp=document.createElement("span");sp.textContent=(whenLabel(false)||L.pick)+" · "+price()+" ₾ · "+duration()+" "+L.min;sum.appendChild(sp);
+  const b=document.createElement("b");b.textContent=!sel.length?L.pickSvc:sel.length>1?L.nSvc(sel.length)+(zones?" + "+L.waxT.toLowerCase():""):svcLabel();sum.appendChild(b);
+  const sp=document.createElement("span");sp.textContent=(whenLabel(false)||L.pick)+(sel.length?" · "+price()+" ₾ · "+duration()+" "+L.min:"");sum.appendChild(sp);
   const go=$("go");go.disabled=sending;
-  go.textContent=sending?L.sending:time===null?L.barPickTime:contactsOk()?L.barBook:L.barNext;
+  go.textContent=sending?L.sending:!sel.length?L.barPickSvc:time===null?L.barPickTime:contactsOk()?L.barBook:L.barNext;
 }
 function renderAll(){
   if(loaded&&dateKey){const st=dayStatus(dFromKey(dateKey));if(st!=="free"&&st!=="few"){dateKey=null;time=null}}
@@ -533,7 +539,7 @@ function loadSlots(force){
 function ensureSlots(){if(!loaded&&!loading)loadSlots()}
 function book(){
   const L=T[lang];
-  if($("website").value){return}
+  if($("website").value||!sel.length){return}
   let phone=$("phone").value.trim();if(!phone.startsWith("+")){const dg=phone.replace(/\D/g,"");phone=(dg.length===9?"+995":"+")+dg}
   const payload={action:"book",lang:lang==="en"?"English":"Русский",service:svcKey(),
     zones:effZones()?String(effZones()):"Не нужно / Not needed",date:dateKey,time:hhmm(time),
@@ -657,6 +663,7 @@ function setDone(on){
 }
 $("go").onclick=()=>{
   if(sending)return;
+  if(!sel.length){$("s-service").scrollIntoView({behavior:"smooth",block:"start"});return}
   if(!loaded){ensureSlots();$("s-date").scrollIntoView({behavior:"smooth",block:"start"});return}
   if(time===null){$("s-date").scrollIntoView({behavior:"smooth",block:"start"});return}
   if(!contactsOk()){$("s-contact").scrollIntoView({behavior:"smooth",block:"start"});validate();return}
