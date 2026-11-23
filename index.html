@@ -288,7 +288,7 @@ const SVC_KEY={1:"Коррекция бровей / Brow shaping — 25 ₾",2:"
 const CATS={brows:{ru:"Брови",en:"Brows"},lashes:{ru:"Ресницы",en:"Lashes"},combo:{ru:"Комплексы",en:"Combos"},wax:{ru:"Депиляция",en:"Waxing"}};
 const SOURCES=[{ru:"Instagram",en:"Instagram",key:"Instagram"},{ru:"Друзья",en:"Friends",key:"Друзья / Friends"},{ru:"Google",en:"Google",key:"Google"},{ru:"Другое",en:"Other",key:"Другое / Other"}];
 const T={
- ru:{title:"Онлайн запись",sub:"Брови и ресницы · Тбилиси, Сабуртало",hours:"Пн–Пт · 13:00–18:00",wknd:"Сб–Вс · по отдельным дням, 13:00–17:00",window:"На завтра — до 22:00 сегодня, и на 2 недели вперёд",
+ ru:{title:"Онлайн запись",sub:"Брови и ресницы · Тбилиси, Сабуртало",hours:"Пн–Пт · 13:00–18:00",wknd:"Сб–Вс · по отдельным дням, 13:00–17:00",window:"На завтра — до 22:00 сегодня, и на 2 недели вперёд",windowExt:"На завтра — до 22:00 сегодня. Запись открыта до 30 декабря",
   h1:"Процедура",nSvc:n=>n+" "+(n<5?"процедуры":"процедур"),multi:"Можно выбрать несколько процедур — время и цена сложатся. Комплексы выбираются отдельно. Нажмите ещё раз, чтобы убрать.",h2:"День и время",h3:"Контакты",loading:"Загружаем свободное время…",
   "lg-free":"свободно","lg-few":"мало мест","lg-full":"всё занято","lg-off":"нельзя записаться",
   "l-name":"Имя","l-phone":"Телефон",opt:"необязательно",opt2:"необязательно","l-src":"Откуда узнали?","l-comment":"Комментарий",
@@ -312,7 +312,7 @@ const T={
   cLate:"До визита меньше 10 часов, отменить онлайн уже нельзя. Напишите Соне в ",cLateLink:"Instagram",
   cInvalid:"Ссылка для отмены недействительна.",cErr:"Не получилось отменить. Попробуйте ещё раз.",
   cRule:"Отменить онлайн можно не позже чем за 10 часов до визита."},
- en:{title:"Online booking",sub:"Brows & lashes · Tbilisi, Saburtalo",hours:"Mon–Fri · 1:00–6:00 pm",wknd:"Sat–Sun · some days, 1:00–5:00 pm",window:"Book for tomorrow until 10 pm today, up to 2 weeks ahead",
+ en:{title:"Online booking",sub:"Brows & lashes · Tbilisi, Saburtalo",hours:"Mon–Fri · 1:00–6:00 pm",wknd:"Sat–Sun · some days, 1:00–5:00 pm",window:"Book for tomorrow until 10 pm today, up to 2 weeks ahead",windowExt:"Book for tomorrow until 10 pm today. Booking is open until December 30",
   h1:"Service",nSvc:n=>n+" services",multi:"You can pick several services — time and price add up. Combos are booked on their own. Tap again to remove.",h2:"Day and time",h3:"Contact details",loading:"Loading available times…",
   "lg-free":"available","lg-few":"few slots","lg-full":"fully booked","lg-off":"not bookable",
   "l-name":"Name","l-phone":"Phone",opt:"optional",opt2:"optional","l-src":"How did you find me?","l-comment":"Comment",
@@ -351,7 +351,9 @@ const dFromKey=k=>{const[y,m,d]=k.split("-").map(Number);return new Date(Date.UT
 const keyOf=d=>d.toISOString().slice(0,10);
 const addDays=(d,n)=>new Date(d.getTime()+n*86400000);
 const minKey=()=>keyOf(addDays(dFromKey(todayKey),nowH>=22?2:1)); /* после 22:00 по Тбилиси завтра закрыто */
-const maxKey=()=>keyOf(addDays(dFromKey(todayKey),14));
+/* booking stays open at least until this date; after that the usual 2 weeks ahead */
+const OPEN_UNTIL="2026-12-30";
+const maxKey=()=>{const r=keyOf(addDays(dFromKey(todayKey),14));return r>OPEN_UNTIL?r:OPEN_UNTIL};
 
 function parseBusy(sStr,eStr){
   const out={};if(!sStr)return out;
@@ -399,6 +401,7 @@ function applyText(){
   document.querySelectorAll("[data-i]").forEach(el=>{const v=L[el.dataset.i];if(typeof v==="string")el.textContent=v});
   $("lang-ru").setAttribute("aria-pressed",lang==="ru");$("lang-en").setAttribute("aria-pressed",lang==="en");
   $("name").placeholder=lang==="ru"?"Нино":"Nino";document.title=L.title;
+  if(todayKey&&maxKey()===OPEN_UNTIL&&keyOf(addDays(dFromKey(todayKey),14))<OPEN_UNTIL)document.querySelectorAll('[data-i="window"]').forEach(el=>{el.textContent=L.windowExt});
 }
 function renderServices(){
   const L=T[lang],box=$("services");box.innerHTML="";
